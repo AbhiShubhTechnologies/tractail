@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkairtelTractail=self.webpackChunkairtelTractail||[]).push([[826],{9930:function(e,a,t){t.r(a);t(2791);var n=t(184);a.default=function(){return(0,n.jsx)("div",{className:"container",children:(0,n.jsx)("h1",{className:"text-center mt-5",children:"Coming Soon..."})})}}}]);
+//# sourceMappingURL=index.6d675e79.chunk.js.map
