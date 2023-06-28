@@ -1227,5 +1227,5 @@ app.get('/api/admin/statistics/recalculate', async (req, res) => {
     return res.json(response);
 });
 
-const PORT = (process.env.PORT || 3000);
+const PORT = (process.env.PORT || 4000);
 app.listen(PORT, () => console.log(`Server is up and running on port ${PORT}...`));
