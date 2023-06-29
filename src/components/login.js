@@ -18,6 +18,7 @@ let Login=()=>{
       
       const formhandle = evt=>{
         evt.preventDefault();
+          console.log("process.env.REACT_APP_API_URL + '/login'",process.env.REACT_APP_API_URL + '/login');
         axios.post( process.env.REACT_APP_API_URL + '/login', user )
         .then((response) => {
             if( response.data.status === 'success' ) {
@@ -25,7 +26,9 @@ let Login=()=>{
                 localStorage.setItem('user_id',response.data.data[0].userID);
                 window.location.href = '/admin/dashboard';
             }else{
+                  console.log("ssss",response.data);
                 alert(response.data.message);
+                
             }
         }).catch((err) => {
             console.log(err);
