@@ -359,12 +359,15 @@ app.get('/api/job', async (req, res) => {
         });
     }).then((row) => {
         response.status = 'success';
+        
         response.data.template = JSON.parse(row[0].meta_value);
         // response.template = response.data.template;
 
         response.data.data_file_url = '';
         if (response.data.data_file) {
+
             response.data.data_file_url = process.env.REACT_APP_BASE_URL + '/assets/uploads/' + response.data.data_file;
+            console.log("check upload ,", response.data.data_file_url );
         }
     }).catch((error) => {
         response.error = error;
