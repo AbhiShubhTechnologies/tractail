@@ -605,7 +605,7 @@ async function UploadCsvDataToMySQL(job) {
     let csvData = [];
     const getObjectParams = {
         Bucket: "uploadfileawsbucket",
-        Key: job.File
+        Key: "file-1689072390241.csv"
       };
       // Initiate the file read from S3
       const fileStream = 
