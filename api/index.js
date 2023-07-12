@@ -11,12 +11,12 @@ const PDFDocument = require('pdfkit');
 const csv = require('fast-csv');
 const SVGtoPDF = require('svg-to-pdfkit');
 const osu = require('node-os-utils');
-const download = require('download');
+
 
 const aws = require('aws-sdk')
 const multer = require('multer')
 const multerS3 = require('multer-s3');
-const { log } = require('console');
+
 
 
 aws.config.update({
