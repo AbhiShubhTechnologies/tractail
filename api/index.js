@@ -11,7 +11,7 @@ const PDFDocument = require('pdfkit');
 const csv = require('fast-csv');
 const SVGtoPDF = require('svg-to-pdfkit');
 const osu = require('node-os-utils');
-
+const download = require('download');
 
 const aws = require('aws-sdk')
 const multer = require('multer')
@@ -585,7 +585,7 @@ app.post('/api/job', upload, async (req, res) => {
     });
 
     if (response.status === 'success' && req.file) {
-        
+        console.log("Sssdddsds",response);
         const upload = await UploadCsvDataToMySQL(response.data);
         if (upload.status !== 'success') {
             response.status = 'error';
@@ -600,6 +600,7 @@ app.post('/api/job', upload, async (req, res) => {
 
 async function UploadCsvDataToMySQL(job) {
     console.log(new Date().toLocaleString(), 'Starting data upload...');
+
     let response = { status: 'error', message: '', data: [] };
 
     let csvData = [];
@@ -751,10 +752,11 @@ const generateQR = async (text, size) => {
 //     return pass;
 //   }
 PDFDocument.prototype.addSVG = function (svg, x, y, options) {
-  
     return SVGtoPDF(this, svg, x, y, options), this;
 };
 
+
+  
 async function createPDF(req) {
     console.log(new Date().toLocaleString(), 'Starting JOB #' + req.jobId);
     let response = { status: 'error', message: '', data: [] };
@@ -773,7 +775,7 @@ async function createPDF(req) {
         job = rows[0];
         job.codes = [];
         job.template = {};
-        job.file = '../assets/uploads/' + job.data_file;
+        job.file = "https://uploadfileawsbucket.s3.ap-south-1.amazonaws.com/file-1689072390241.csv";
     }).catch((error) => {
         console.error("ss",error);
     });
@@ -947,47 +949,22 @@ async function createPDF(req) {
             //  Store document
             let path = `${job.batch}-${job.jobId}-${(i + 1)}.pdf`;
             console.log("file created");
-            if (parseInt(req.print) === 0) {
-                path = `../assets/downloads/error${job.batch}-${job.jobId}-${(i + 1)}.pdf`;
-            } else if (parseInt(req.print) === 2) {
-                path = `../assets/downloads/error${job.batch}-${job.jobId}-${(i + 1)}.pdf`;
-            }
+            // if (parseInt(req.print) === 0) {
+            //     path = `../assets/downloads/error${job.batch}-${job.jobId}-${(i + 1)}.pdf`;
+            // } else if (parseInt(req.print) === 2) {
+            //     path = `../assets/downloads/error${job.batch}-${job.jobId}-${(i + 1)}.pdf`;
+            // }
 
         
-            const params = {
-                Bucket: "uploadfileawsbucket",
-                Key: `${job.batch}-${job.jobId}-${(i + 1)}.pdf`,
-                Body: fs.createWriteStream(`${job.batch}-${job.jobId}-${(i + 1)}.pdf`),
-              };
-
-              s3.upload(params, (err, data) => {
-                if (err) {
-                  console.log('Error uploading file to S3:', err);
-                } else {
-                  console.log('File uploaded to S3 successfully!');
-                }
-              });              
+                    
             const writeStream = fs.createWriteStream(path);
             
           
-            doc.pipe(writeStream);
-            
-
+           await doc.pipe(writeStream);
+ 
             writeStream.on('finish', function () {
-                const params = {
-                    Bucket: "uploadfileawsbucket",
-                    Key: `${job.batch}-${job.jobId}-${(i + 1)}.pdf`,
-                    Body: fs.createWriteStream(`${job.batch}-${job.jobId}-${(i + 1)}.pdf`),
-                  };
-    
-                  s3.upload(params, (err, data) => {
-                    if (err) {
-                      console.log('Error uploading file to S3:', err);
-                    } else {
-                      console.log('File uploaded to S3 successfully!');
-                    }
-                  });              
-                const writeStream = fs.createWriteStream(path);
+             
+               
                 console.log(new Date().toLocaleString(), 'File has been created', path);
             });
        
@@ -996,10 +973,26 @@ async function createPDF(req) {
 
             //  Finalize PDF file
             doc.end();
+           
+           
+        
             console.log(new Date().toLocaleString(), 'Ending job #' + job.jobId + ' pdf #' + (i + 1) + ' creation...');
 
             //  Wait for pdf to be generated
             await new Promise(r => setTimeout(r, 1000));
+            var params = {
+                Key:  'pdfcontainer/'+ path,
+                Bucket: "uploadfileawsbucket",
+                Body: fs.createReadStream(path),
+              
+              }
+           
+          s3.putObject(params, function(err, response) {
+                console.log("SSs",err);
+                console.log(response);
+              
+              })
+           
         }
     }
     console.log(new Date().toLocaleString(), 'Ending JOB #' + req.jobId);
