@@ -585,7 +585,7 @@ app.post('/api/job', upload, async (req, res) => {
     });
 
     if (response.status === 'success' && req.file) {
-        console.log("Sssdddsds",response);
+        
         const upload = await UploadCsvDataToMySQL(response.data);
         if (upload.status !== 'success') {
             response.status = 'error';
@@ -751,7 +751,7 @@ const generateQR = async (text, size) => {
 //     return pass;
 //   }
 PDFDocument.prototype.addSVG = function (svg, x, y, options) {
-    console.log("SDadddsvg");
+  
     return SVGtoPDF(this, svg, x, y, options), this;
 };
 
@@ -945,7 +945,7 @@ async function createPDF(req) {
             }
 
             //  Store document
-            let path = `../assets/downloads/${job.batch}-${job.jobId}-${(i + 1)}.pdf`;
+            let path = `${job.batch}-${job.jobId}-${(i + 1)}.pdf`;
             console.log("file created");
             if (parseInt(req.print) === 0) {
                 path = `../assets/downloads/error${job.batch}-${job.jobId}-${(i + 1)}.pdf`;
